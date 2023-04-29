@@ -17,19 +17,13 @@ class DSU
         return parent[x] = (parent[x] == x) ? x : find(parent[x]);
     }
 
-    bool union(int x, int y)
-    {
-        int xParent = find(x), yParent = find(y);
-
-        if (xParent != yParent)
-        {
-            (rank(xParent) < rank(yParent)) ? parent[xParent] = yParent: parent[yParent] = xParent;
-
-            (rank(xParent) += (rank(xParent) < rank(yParent));
-
-                return 1;
-            }
-            return 0;
+    bool Union(int x, int y) {
+        int xset = find(x), yset = find(y);
+        if (xset != yset) {
+            rank[xset] < rank[yset] ? parent[xset] = yset : parent[yset] = xset;
+            rank[xset] += rank[xset] == rank[yset];
+            return true;
         }
+        return false;
     }
 };
