@@ -1,7 +1,7 @@
 class SGTreeRangeSum {
 public: vector<int> seg;
 public:
-	SGTree(int n) {
+	SGTreeRangeSum(int n) {
 		seg.resize(4 * n + 1);
 	}
  
