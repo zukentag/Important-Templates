@@ -1,0 +1,90 @@
+///////////////////////////////////////////////////////////////////////////////////////
+void MaxSubarraySum()
+{
+    ll i, j, n, m;
+    cin >> n;
+ 
+    vl arr(n);
+ 
+    ll sum = 0, ans = LLONG_MIN;
+    fo(i, 0, n - 1)
+    {
+        cin >> arr[i];
+ 
+        sum += arr[i];
+ 
+        ans = max(ans, sum);
+        if (sum < 0)
+        {
+            sum = 0;
+        }
+    }
+    cout << ans;
+}
+///////////////////////////////////////////////////////////////////////////////////////
+void MaxSubarraySumOfLengthAToB()
+{
+    ll i, j, n, m, a, b, len = 0;
+    cin >> n >> a >> b;
+
+    vl arr(n + 1, 0);
+    vl pre(n + 1, 0);
+    for (int i = 1; i <= n; i++)
+    {
+        cin >> arr[i];
+        pre[i] = pre[i - 1] + arr[i];
+    }
+
+    ll sum = 0, ans = LLONG_MIN;
+    set<pair<ll, ll>> st;
+
+    for (int i = a; i <= b; i++)
+    {
+        st.insert({pre[i], i});
+    }
+
+    for (int i = 1; i <= n - a + 1; i++)
+    {
+        ans = max(ans, st.rbegin()->first - pre[i - 1]);
+        st.erase({pre[i + a - 1], i + a - 1});
+
+        if (i + b <= n)
+        {
+            st.insert({pre[i + b], i + b});
+        }
+    }
+    cout << ans;
+}
+///////////////////////////////////////////////////////////////////////////////////////
+void SubbArrayWithSumK()
+{
+    ll i, j, n, m, k;
+    cin >> n >> k;
+ 
+    vl arr(n);
+    fo(i, 0, n - 1)
+    {
+        cin >> arr[i];
+    }
+    map<ll, ll> mpp;
+ 
+    ll current_sum = 0, ans = 0;
+    fo(i, 0, n - 1)
+    {
+        current_sum += arr[i];
+ 
+        if (current_sum == k)
+        {
+            ans++;
+        }
+ 
+        if (mpp.find(current_sum - k) != mpp.end())
+        {
+            ans += mpp[current_sum - k];
+        }
+ 
+        mpp[current_sum]++;
+    }
+    cout << ans;
+}
+///////////////////////////////////////////////////////////////////////////////////////
