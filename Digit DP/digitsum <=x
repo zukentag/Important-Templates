@@ -1,0 +1,89 @@
+// Approach
+// Count numbers between num1 & num2 with digitsum <= max_sum (a)
+// Count numbers between num1 & num2 with digitsum <= min_sum-1 (b)
+// a-b is the answer
+
+// Explanation
+// The basic idea of the code is to generate all possible numbers between num1 and num2 while considering the constraints of the minimum and maximum sums.
+
+// The variables tight1 and tight2 are used to keep track of whether the chosen digits so far are the lowest possible (in num1) and highest possible (in num2), respectively.
+
+// If tight1 is true, it means that all the digits chosen so far are at their lowest possible value according to num1. Therefore, we cannot choose a digit less than the digit at the current index, as it would make the number smaller than num1. Hence, if tight1 is true and we still choose the lowest digit allowed, tight1 remains true; otherwise, it becomes false, indicating that the lowest digit can be 0 in further places.
+
+// Similarly, tight2 keeps track of whether the chosen digits so far are at their highest possible value according to num2. If tight2 is true, it means that all the digits chosen so far are at their highest possible value according to num2. Therefore, we cannot choose a digit higher than the digit at the current index, as it would make the number larger than num2.
+
+// By using these flags, the code explores all possible digits at each index while maintaining the constraints imposed by num1 and num2, allowing it to count the valid numbers within the specified sum range.
+
+// I hope this explanation helps clarify the approach for solving the problem using digit DP. Let me know if you have any further questions!
+
+// Time complexity:
+// O(Number_Of_Digits * Sum)
+// i.e. O(logN * Sum)
+// Space complexity:
+// O(logN*Sum)
+
+
+#define ll long long
+const ll MOD = 1e9 + 7;
+class Solution
+{
+    private:
+    
+//     Constraints:
+// 1 <= num1 <= num2 <= 1022
+// 1 <= min_sum <= max_sum <= 400
+    
+// Max number of digits for a number =22
+// Max range of tight1=(true/false) =2
+// Max range of tight1=(true/false) =2
+// Max sum for a number =400        
+    
+    ll dp[23][2][2][401];
+
+    public:
+
+        ll countString(ll ind, bool tight1, bool tight2, ll sum, string &num1, string &num2)
+        {
+            // if sum < 0 that that sum is not valid
+            if (sum < 0)
+                return 0;
+            
+            // if we reached the last index and sum>0 than that number satisfy the conditions
+            if (ind == num2.size())
+                return 1;
+
+            
+            if (dp[ind][tight1][tight2][sum] != -1)
+                return dp[ind][tight1][tight2][sum];
+
+            // lower and upper bound from value of tight1 and tight 2
+            ll lowerBound = tight1 ? num1[ind] - '0' : 0;
+            ll upperBound = tight2 ? num2[ind] - '0' : 9;
+
+            
+            ll count = 0;
+            for (ll digit = lowerBound; digit <= upperBound; digit++)
+            {
+                count += countString(ind + 1, tight1 && (digit == lowerBound), tight2 && (digit == upperBound), sum - digit, num1, num2);
+                count %= MOD;
+            }
+
+            return dp[ind][tight1][tight2][sum] = count;
+        }
+    int count(string num1, string num2, int min_sum, int max_sum)
+    {
+        memset(dp, -1, sizeof(dp));
+
+        string extendedNum1 = string(num2.size() - num1.size(), '0') + num1;
+
+        ll ValidNumberLessThanMaxSum = countString(0, 1, 1, max_sum, extendedNum1, num2);
+
+        memset(dp, -1, sizeof(dp));
+
+        ll ValidNumberLessThanMinSum = countString(0, 1, 1, min_sum - 1, extendedNum1, num2);
+
+        ll answer = (ValidNumberLessThanMaxSum - ValidNumberLessThanMinSum + MOD) % MOD;
+
+        return answer;
+    }
+};
